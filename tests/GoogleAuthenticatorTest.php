@@ -120,4 +120,38 @@ class GoogleAuthenticatorTest extends \PHPUnit\Framework\TestCase
             $this->helper->getUrl('foo', 'foobar.org', '3DHTQX4GCRKHGS55CJ')
         );
     }
+
+    public function testPeriodValid(): void
+    {
+        $authenticator = new GoogleAuthenticatorPrivateTest(8, 10, new \DateTime('2012-03-17 22:17:00'));
+	$this->assertSame(true, $authenticator->setPeriodTest(300));
+	$this->assertSame(300, $authenticator->getPeriodTest());
+    }
+
+    public function testPeriodInvalidZero(): void
+    {
+        $authenticator = new GoogleAuthenticatorPrivateTest(8, 10, new \DateTime('2012-03-17 22:17:00'));
+	$this->assertSame(false, $authenticator->setPeriodTest(0));
+	$this->assertSame(30, $authenticator->getPeriodTest());
+    }
+
+    public function testPeriodInvalidNull(): void
+    {
+        $authenticator = new GoogleAuthenticatorPrivateTest(8, 10, new \DateTime('2012-03-17 22:17:00'));
+	$this->assertSame(false, $authenticator->setPeriodTest(null));
+	$this->assertSame(30, $authenticator->getPeriodTest());
+    }
+}
+
+class GoogleAuthenticatorPrivateTest extends GoogleAuthenticator
+{
+    public function getPeriodTest()
+    {
+        return $this->getPeriod();
+    }
+
+    public function setPeriodTest($period)
+    {
+        return $this->setPeriod($period);
+    }
 }

@@ -86,6 +86,21 @@ final class GoogleAuthenticator implements GoogleAuthenticatorInterface
         return $result > 0;
     }
 
+    final protected function setPeriod($period):bool
+    {
+        if (!(null === $period || intval($period) < 1 || intval($period) > 86400)) {
+            $this->codePeriod = $period;
+            return true;
+        }
+
+        return false;
+    }
+
+    final protected function getPeriod():int
+    {
+        return $this->codePeriod;
+    }
+
     /**
      * NEXT_MAJOR: add the interface typehint to $time and remove deprecation.
      *
