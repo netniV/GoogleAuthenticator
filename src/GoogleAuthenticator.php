@@ -88,12 +88,10 @@ final class GoogleAuthenticator implements GoogleAuthenticatorInterface
 
     public function setCodePeriod(int $period):bool
     {
-        if ($period >= 1 && $period <= 86400) {
-            $this->codePeriod = $period;
-            return true;
-        }
-
-        return false;
+        if ($period < 1 || $period > 86400) {
+		throw new InvalidArgumentException('setCodePeriod excepts a value between 1 and 86400 (1 day)');
+	}
+        $this->codePeriod = $period;
     }
 
     public function getCodePeriod():int

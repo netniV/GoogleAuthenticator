@@ -22,6 +22,24 @@ class GoogleAuthenticatorTest extends \PHPUnit\Framework\TestCase
      */
     protected $helper;
 
+    /**
+     * Asserts that the given callback throws the given exception.
+     *
+     * @param string $expectClass The name of the expected exception class
+     * @param callable $callback A callback which should throw the exception
+     */
+    protected function assertException(string $expectClass, callable $callback)
+    {
+        try {
+            $callback();
+        } catch (\Throwable $exception) {
+            $this->assertInstanceOf($expectClass, $exception, 'An invalid exception was thrown');
+            return;
+        }
+
+        $this->fail('No exception was thrown');
+    }
+
     public function setUp(): void
     {
         $this->helper = new GoogleAuthenticator();
@@ -124,28 +142,28 @@ class GoogleAuthenticatorTest extends \PHPUnit\Framework\TestCase
     public function testCodePeriodValid(): void
     {
         $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertTrue($authenticator->setCodePeriod(300));
+        $this->assertFalse($authenticator->setCodePeriod(300));
         $this->assertSame(300, $authenticator->getCodePeriod());
     }
 
     public function testCodePeriodInvalidNegative(): void
     {
         $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertFalse($authenticator->setCodePeriod(-30));
+        $this->assertException('InvalidArgumentException', function() { $authenticator->setCodePeriod(-30); });
         $this->assertSame(30, $authenticator->getCodePeriod());
     }
 
     public function testCodePeriodInvalidMin(): void
     {
         $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertFalse($authenticator->setCodePeriod(0));
+        $this->assertException('InvalidArgumentException', function() { $authenticator->setCodePeriod(0); });
         $this->assertSame(30, $authenticator->getCodePeriod());
     }
 
     public function testCodePeriodInvalidMax(): void
     {
         $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertFalse($authenticator->setCodePeriod(86401));
+        $this->assertException('InvalidArgumentException', function() { $authenticator->setCodePeriod(86401); });
         $this->assertSame(30, $authenticator->getCodePeriod());
     }
 }
