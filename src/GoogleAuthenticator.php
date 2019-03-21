@@ -86,9 +86,9 @@ final class GoogleAuthenticator implements GoogleAuthenticatorInterface
         return $result > 0;
     }
 
-    final protected function setPeriod($period):bool
+    public function setCodePeriod(int $period):bool
     {
-        if (!(null === $period || intval($period) < 1 || intval($period) > 86400)) {
+        if ($period >= 1 && $period <= 86400)) {
             $this->codePeriod = $period;
             return true;
         }
@@ -96,7 +96,7 @@ final class GoogleAuthenticator implements GoogleAuthenticatorInterface
         return false;
     }
 
-    final protected function getPeriod():int
+    public function getCodePeriod():int
     {
         return $this->codePeriod;
     }

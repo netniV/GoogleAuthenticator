@@ -121,37 +121,31 @@ class GoogleAuthenticatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testPeriodValid(): void
+    public function testCodePeriodValid(): void
     {
-        $authenticator = new GoogleAuthenticatorPrivateTest(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertTrue($authenticator->setPeriodTest(300));
-        $this->assertSame(300, $authenticator->getPeriodTest());
+        $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
+        $this->assertTrue($authenticator->setCodePeriod(300));
+        $this->assertSame(300, $authenticator->getCodePeriod());
     }
 
-    public function testPeriodInvalidZero(): void
+    public function testCodePeriodInvalidNegative(): void
     {
-        $authenticator = new GoogleAuthenticatorPrivateTest(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertFalse($authenticator->setPeriodTest(0));
-        $this->assertSame(30, $authenticator->getPeriodTest());
+        $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
+        $this->assertFalse($authenticator->setCodePeriod(-30));
+        $this->assertSame(30, $authenticator->getCodePeriod());
     }
 
-    public function testPeriodInvalidNull(): void
+    public function testCodePeriodInvalidMin(): void
     {
-        $authenticator = new GoogleAuthenticatorPrivateTest(8, 10, new \DateTime('2012-03-17 22:17:00'));
-        $this->assertFalse($authenticator->setPeriodTest(null));
-        $this->assertSame(30, $authenticator->getPeriodTest());
-    }
-}
-
-class GoogleAuthenticatorPrivateTest extends GoogleAuthenticator
-{
-    public function getPeriodTest()
-    {
-        return $this->getPeriod();
+        $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
+        $this->assertFalse($authenticator->setCodePeriod(0));
+        $this->assertSame(30, $authenticator->getCodePeriod());
     }
 
-    public function setPeriodTest($period)
+    public function testCodePeriodInvalidMax(): void
     {
-        return $this->setPeriod($period);
+        $authenticator = new GoogleAuthenticator(8, 10, new \DateTime('2012-03-17 22:17:00'));
+        $this->assertFalse($authenticator->setCodePeriod(86401));
+        $this->assertSame(30, $authenticator->getCodePeriod());
     }
 }
